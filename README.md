@@ -1,4 +1,5 @@
-# Admission Controller
+# <img src="logo.png" alt="drawing" width="40"/> Admission Controller 
+
 
 The controller applies sensible defaults for pod's securityContext `runAsUser` value. It validates that security context `runAsNonRoot` is not defined when `runAsUser` is set to 0, as you cannot run as nonRoot and run as user 0. If no `runAsUser` value is defined, it will assign a default value of 2000.
 
