@@ -8,6 +8,7 @@ on:
 jobs:
 
   check-commit-message:
+    name: "check-commit-mesage"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -18,6 +19,8 @@ jobs:
           accessToken: ${{ secrets.GITHUB_TOKEN }}
 
   unit-test:
+    name: "unit-test"
+    needs: check-commit-message
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
