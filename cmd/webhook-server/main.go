@@ -25,7 +25,7 @@ var (
 // applySecurityDefaults implements the logic of our example admission controller webhook. For every pod that is created
 // (outside of Kubernetes namespaces), it first checks if `runAsNonRoot` is set. If it is not, it is set to a default
 // value of `false`. Furthermore, if `runAsUser` is not set (and `runAsNonRoot` was not initially set), it defaults
-// `runAsUser` to a value of 1234.
+// `runAsUser` to a value of 20000.
 //
 // To demonstrate how requests can be rejected, this webhook further validates that the `runAsNonRoot` setting does
 // not conflict with the `runAsUser` setting - i.e., if the former is set to `true`, the latter must not be `0`.

@@ -46,11 +46,13 @@ EOF
 ```
 
 output
+
 ```bash
 Error from server: error when creating "STDIN": admission webhook "admission-controller.admission.svc" denied the request: runAsNonRoot specified, but runAsUser set to 0 (the root user, contradictory)
 ```
 
 Apply a pod without `runAsUser` defined
+
 ```yaml
 kubectl apply -f -<<EOF
 apiVersion: v1
@@ -69,11 +71,21 @@ EOF
 
 kubectl wait --for=condition=ready pod/defaults
 
-kubectl get po defaults -ojsonpath='{ .spec.securityContext }'
+kubectl get po defaults -ojsonpath='{ .spec.securityContext }' | jq
+```
+
+output
+
+```json
+{
+  "runAsNonRoot": true,
+  "runAsUser": 20000
+}
 ```
 
 
 Define `runAsUser` and override admission controller
+
 ```yaml
 kubectl apply -f -<<EOF
 apiVersion: v1
@@ -96,7 +108,23 @@ EOF
 
 kubectl wait --for=condition=ready pod/override
 
-kubectl get po override -ojsonpath='{ .spec.containers[*].securityContext }'
+kubectl get po override -ojsonpath='{ .spec.containers[*].securityContext }' | jq
 
-kubectl get po override -ojsonpath='{ .spec.securityContext }'
+kubectl get po override -ojsonpath='{ .spec.securityContext }' | jq
+```
+
+output
+
+```json
+{
+  "runAsUser": 0
+}
+```
+
+output
+
+```json
+{
+  "runAsNoneRoot": false
+}
 ```
