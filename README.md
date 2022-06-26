@@ -52,6 +52,38 @@ output
 Error from server: error when creating "STDIN": admission webhook "admission-controller.admission.svc" denied the request: runAsNonRoot specified, but runAsUser set to 0 (the root user, contradictory)
 ```
 
+The admission controller can be ignore with an annotation of `admission-ignore`, test this
+
+Apply a pod with a conflicting securityContext. We will define `runAsUser` equal to 0, and `runAsNonRoot`, and add an annotation of `admission-ignore`.
+
+```yaml
+kubectl apply -f -<<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    admission-ignore: ""
+  name: conflict
+  labels:
+    app: conflict
+spec:
+  restartPolicy: Never
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 0
+  containers:
+    - name: busybox
+      image: busybox
+      command: ["sh", "-c", "echo Running as user $(id -u)"]
+EOF
+```
+
+output
+
+```bash
+pod/conflict created
+```
+
 Apply a pod without `runAsUser` defined
 
 ```yaml

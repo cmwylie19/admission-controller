@@ -10,6 +10,7 @@ import (
 	admission "k8s.io/api/admission/v1beta1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 const (
@@ -32,6 +33,8 @@ var (
 // Note that we combine both the setting of defaults and the check for potential conflicts in one webhook; ideally,
 // the latter would be performed in a validating webhook admission controller.
 func applySecurityDefaults(req *admission.AdmissionRequest) ([]patchOperation, error) {
+	var patches []patchOperation
+
 	// This handler should only get called on Pod objects as per the MutatingWebhookConfiguration in the YAML file.
 	// However, if (for whatever reason) this gets invoked on an object of a different kind, issue a log message but
 	// let the object request pass through otherwise.
@@ -47,6 +50,11 @@ func applySecurityDefaults(req *admission.AdmissionRequest) ([]patchOperation, e
 		return nil, fmt.Errorf("could not deserialize pod object: %v", err)
 	}
 
+	// Check ignore annotation
+	if v1.HasAnnotation(pod.ObjectMeta, "admission-ignore") {
+		return patches, nil
+	}
+
 	// Retrieve the `runAsNonRoot` and `runAsUser` values.
 	var runAsNonRoot *bool
 	var runAsUser *int64
@@ -56,7 +64,6 @@ func applySecurityDefaults(req *admission.AdmissionRequest) ([]patchOperation, e
 	}
 
 	// Create patch operations to apply sensible defaults, if those options are not set explicitly.
-	var patches []patchOperation
 	if runAsNonRoot == nil {
 		patches = append(patches, patchOperation{
 			Op:   "add",
