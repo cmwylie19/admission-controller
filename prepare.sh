@@ -6,6 +6,8 @@
 
 set -euo pipefail
 
+mkdir -p k8s keys
+
 basedir="$(pwd)/deployment"
 keydir="$(pwd)/keys"
 

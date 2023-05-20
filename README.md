@@ -14,6 +14,7 @@ The project can be built by running `make`. The images are pushed by running `ma
 ## Deploy Admission Controller
 
 To deploy, run the `prepare.sh` in your terminal to create a CA, certificate, and private key for the controller and generate the secret, and the deployment manifests.
+
 ```bash
 kubectl apply -f k8s/ns.yaml
 
