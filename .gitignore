@@ -14,5 +14,10 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 local/
-keys/*
-k8s/*
+keys/*.crt
+keys/*.key
+keys/*.pem
+keys/*.csr
+keys/*.conf
+keys/*.srl
+k8s/*.yaml
